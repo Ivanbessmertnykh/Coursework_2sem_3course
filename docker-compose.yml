@@ -1,0 +1,36 @@
+version: '3'
+services:
+  server:
+    container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - ./server:/usr/app
+    ports:
+      - 1234:1234
+    depends_on:
+      - db
+  client:
+    container_name: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - ./client:/usr/app
+    ports:
+      - 80:80
+    depends_on:
+      - server
+  db:
+    container_name: postgres
+    image: postgres
+    restart: always
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/1.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: toor123
+      POSTGRES_DB: postgres
+
+#ADMIN@Ivan.ru:123456789 admin-creds
